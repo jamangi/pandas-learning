@@ -11,4 +11,21 @@ df = pd.DataFrame(data)
 
 # Select name and age of the student with Student_ID = 101
 student_101_info = df[df['Student_ID'] == 101][['Name', 'Age']]
-print(student_101_info)
+print()
+print(df) # pritns the column names, the row numbers, and all column data
+print("*"*40)
+print(df['Student_ID']) # prints the row numbers, and only the student_id column data
+print("*"*40)
+print(df[df['Student_ID'] == 101]) # prints all column names, prints row number, all column info where student id == 101 - produces a df
+print("*"*40)
+print(df[['Student_ID']]) # like df['Student_ID'], but includes column name
+print("*"*40)
+print(df['Student_ID'] == 101) # this shows the row ids, but the column data is all trues and falses. It's a truth table based on ['Student_ID'] == 101
+print("*"*40)
+def modifySalaryColumn(employees: pd.DataFrame) -> pd.DataFrame:
+    employees['salary'] = employees['salary'] * 2
+    return employees
+
+pd = pd.DataFrame([{"name": "bob", "salary": 200}, {"name": "joe", "salary": 500}])
+modifySalaryColumn(pd)
+print(pd)

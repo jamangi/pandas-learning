@@ -2,15 +2,27 @@
 pandas-learning
 
 Panda things to learn:
-1. How to create DataFrames
+### How to create DataFrames - Pandas Data Structures
 - What shape must the raw data model be in
 - How can the raw data model be put into a DataFrame
+- How to create a new column based on an old column
 
 - Looks like the data model can either be a list of lists or a dict of lists
   - If it's a list of lists, each sub-list must have the same shape,
-  - and the DataFrame constructor needs the list data as an argument and a column key argument specifying the column names
   - If it's a dict of lists, the dict can be put into the DataFrame constructor without specifying column names (the keys are column names)
+### How to read DataFrames - Data Inspection
+- reading metadata, such as number of rows and columns 
+- reading the first three rows
+- read row according to a select filter
+- read specific columns of a row selected by filter
+### How to Delete data - Data Cleaning
+- How to delete duplicate rows in which data in one column is duplicated
+- How to delete rows with no data in some particular column
+## How to Update data - Data Cleaning & Table Reshaping
+- How to modify the data in a column
+- How to rename columns of data
 
+# CREATE
 dict of lists:
 ```py
 import pandas as pd
@@ -39,8 +51,22 @@ data = [[1, 2, 'New York City', 'New York'], [2, 3, 'Leetcode', 'California']]
 address = pd.DataFrame(data, columns=['addressId', 'personId', 'city', 'state']).astype({'addressId':'Int64', 'personId':'Int64', 'city':'object', 'state':'object'})
 ```
 
-2. How to read DataFrames
+list of dicts:
+```py
+pd = pd.DataFrame([{"name": "bob", "salary": 200}, {"name": "joe", "salary": 500}])
+```
 
+Creating a new column based on an old column
+```py 
+import pandas as pd
+
+def createBonusColumn(employees: pd.DataFrame) -> pd.DataFrame:
+    employees['bonus'] = employees['salary'] * 2
+    return employees
+```
+
+
+# READ
 reading metadata, such as number of rows and columns:
 ```py
 import pandas as pd
@@ -103,5 +129,58 @@ df = pd.DataFrame(data)
 student_101_info = df[df['Student_ID'] == 101][['Name', 'Age']]
 print(student_101_info)
 ```
-
 As you can see, a DF has a boolean indexer, '[]' similar to a list's index, but it can take a df or a list as input.
+# Delete
+
+Deletes the entire row containing the duplicate data in only the email column
+```py
+import pandas as pd
+
+# Assuming df is your DataFrame
+# Example DataFrame
+data = {
+    'Name': ['Alice', 'Bob', 'Charlie', 'David', 'Emma'],
+    'Email': ['alice@example.com', 'bob@example.com', 'alice@example.com', 'david@example.com', 'emma@example.com']
+}
+df = pd.DataFrame(data)
+
+# Drop rows with duplicate emails, keeping only the first occurrence
+df_unique_emails = df.drop_duplicates(subset=['Email'], keep='first')
+
+# Print the DataFrame after dropping duplicates
+print(df_unique_emails)
+```
+
+How to delete rows with no data in some particular column:
+```py
+df_cleaned = df.dropna(subset=['Name'])
+```
+
+# Update
+How to modify the data in a column:
+```py
+import pandas as pd
+def modifySalaryColumn(employees: pd.DataFrame) -> pd.DataFrame:
+    employees['salary'] = employees['salary'] * 2
+    return employees
+
+pd = pd.DataFrame([{"name": "bob", "salary": 200}, {"name": "joe", "salary": 500}])
+print(pd)
+```
+
+How to rename columns of data:
+```py
+import pandas as pd
+
+# Assuming df is your DataFrame
+# Example DataFrame
+data = {
+    'id': [1, 2, 3],
+    'first': ['Alice', 'Bob', 'Charlie'],
+    'last': ['Smith', 'Doe', 'Brown'],
+    'age': [25, 30, 35]
+}
+df = pd.DataFrame(data)
+
+df_renamed = df.rename(columns={'id': 'student_id', 'first': 'first_name', 'last': 'last_name', 'age': 'age_in_years'})
+```

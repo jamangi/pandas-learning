@@ -26,6 +26,27 @@ def modifySalaryColumn(employees: pd.DataFrame) -> pd.DataFrame:
     employees['salary'] = employees['salary'] * 2
     return employees
 
-pd = pd.DataFrame([{"name": "bob", "salary": 200}, {"name": "joe", "salary": 500}])
-modifySalaryColumn(pd)
-print(pd)
+df = pd.DataFrame([{"name": "bob", "salary": 200}, {"name": "joe", "salary": 500}])
+modifySalaryColumn(df)
+print(df)
+
+print("*"*40)
+data = {
+    'city': ['CityA', 'CityB', 'CityA', 'CityB', 'CityA', 'CityB'],
+    'month': ['Jan', 'Jan', 'Feb', 'Feb', 'Mar', 'Mar'],
+    'temperature': [10, 15, 12, 14, 11, 16]
+}
+df = pd.DataFrame(data)
+
+# Pivot the DataFrame
+pivot_df = df.pivot_table(index='month', columns='city', values='temperature')
+
+# Print the pivoted DataFrame
+print(pivot_df)
+print("*"*40)
+pivot_df = pivot_df.astype(int)
+print(pivot_df)
+
+pivot_df = df.pivot(index='month', columns='city', values='temperature')
+print("*"*40)
+print(pivot_df)

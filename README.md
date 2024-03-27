@@ -1,6 +1,8 @@
 # pandas-learning
 pandas-learning
 
+Tutorial: https://leetcode.com/studyplan/introduction-to-pandas/
+
 Panda things to learn:
 ### How to create DataFrames - Pandas Data Structures
 - What shape must the raw data model be in
@@ -15,12 +17,18 @@ Panda things to learn:
 - reading the first three rows
 - read row according to a select filter
 - read specific columns of a row selected by filter
+- how to method chain, to filter, order, and select in one line
 ### How to Delete data - Data Cleaning
 - How to delete duplicate rows in which data in one column is duplicated
 - How to delete rows with no data in some particular column
 ## How to Update data - Data Cleaning & Table Reshaping
 - How to modify the data in a column
 - How to rename columns of data
+- How to change the data-type of a column's data
+- How to replace null values with some other value
+- How to concatenate two DataFrames vertically into one DataFrame
+- How to pivot data, to turn duplicate horizontal values into vertical columns
+- How to reshape the data, from more columns to less columns
 
 # CREATE
 dict of lists:
@@ -130,6 +138,37 @@ student_101_info = df[df['Student_ID'] == 101][['Name', 'Age']]
 print(student_101_info)
 ```
 As you can see, a DF has a boolean indexer, '[]' similar to a list's index, but it can take a df or a list as input.
+
+How to method chain, to filter, order, and select in one line:
+```py
+import pandas as pd
+
+# Assuming df is your DataFrame
+# Example DataFrame
+data = {
+    'name': ['Lion', 'Elephant', 'Giraffe', 'Tiger', 'Hippo'],
+    'species': ['Mammal', 'Mammal', 'Mammal', 'Mammal', 'Mammal'],
+    'age': [5, 10, 8, 6, 4],
+    'weight': [200, 5000, 800, 150, 300]
+}
+df = pd.DataFrame(data)
+
+# List names of animals that weigh more than 100 kilograms, sorted by weight in descending order
+result = (
+    df[df['weight'] > 100]  # Filter animals with weight > 100 kilograms
+    .sort_values(by='weight', ascending=False)  # Sort by weight in descending order
+    ['name']  # Select only the 'name' column
+    .tolist()  # Convert the Series to a list
+)
+
+print(result)
+
+# OR
+
+def findHeavyAnimals(animals: pd.DataFrame) -> pd.DataFrame:
+    return animals[animals['weight'] > 100].sort_values(by='weight', ascending=False)[['name']]
+
+```
 # Delete
 
 Deletes the entire row containing the duplicate data in only the email column
@@ -183,4 +222,136 @@ data = {
 df = pd.DataFrame(data)
 
 df_renamed = df.rename(columns={'id': 'student_id', 'first': 'first_name', 'last': 'last_name', 'age': 'age_in_years'})
+```
+
+How to change the data-type of a column's data:
+```py
+import pandas as pd
+
+# Assuming df is your DataFrame
+# Example DataFrame
+data = {
+    'student_id': [1, 2, 3],
+    'name': ['Alice', 'Bob', 'Charlie'],
+    'age': [20, 21, 22],
+    'grade': [85.5, 90.3, 88.7]
+}
+df = pd.DataFrame(data)
+
+# Convert the "grade" column from float to integer
+df['grade'] = df['grade'].astype(int)
+
+# Print the DataFrame after conversion
+print(df)
+```
+How to replace null values with some other value:
+```py
+import pandas as pd
+
+# Assuming df is your DataFrame
+# Example DataFrame
+data = {
+    'name': ['Product A', 'Product B', 'Product C', 'Product D'],
+    'quantity': [10, None, 20, None],
+    'price': [15.99, 20.50, 10.25, 5.75]
+}
+df = pd.DataFrame(data)
+
+# Fill missing values in the "quantity" column with 0
+df['quantity'].fillna(0, inplace=True)
+
+# Print the DataFrame after filling missing values
+print(df)
+```
+
+How to concatenate two DataFrames vertically into one DataFrame
+```py
+import pandas as pd
+
+# Assuming df1 and df2 are your DataFrames
+# Example DataFrames
+data1 = {
+    'student_id': [1, 2, 3],
+    'name': ['Alice', 'Bob', 'Charlie'],
+    'age': [20, 21, 22]
+}
+data2 = {
+    'student_id': [4, 5, 6],
+    'name': ['David', 'Emma', 'Frank'],
+    'age': [23, 24, 25]
+}
+df1 = pd.DataFrame(data1)
+df2 = pd.DataFrame(data2)
+
+# Concatenate the DataFrames vertically
+result_df = pd.concat([df1, df2], ignore_index=True)
+
+# Print the concatenated DataFrame
+print(result_df)
+```
+
+How to pivot data, to turn duplicate horizontal values into vertical columns
+```py
+import pandas as pd
+
+# Assuming df is your DataFrame
+# Example DataFrame
+data = {
+    'city': ['CityA', 'CityB', 'CityA', 'CityB', 'CityA', 'CityB'],
+    'month': ['Jan', 'Jan', 'Feb', 'Feb', 'Mar', 'Mar'],
+    'temperature': [10, 15, 12, 14, 11, 16]
+}
+df = pd.DataFrame(data)
+
+# Pivot the DataFrame
+pivot_df = df.pivot_table(index='month', columns='city', values='temperature').astype(int)
+
+# Print the pivoted DataFrame
+print(pivot_df)
+```
+```pycon
+city   CityA  CityB
+
+month              
+Feb       12     14
+Jan       10     15
+Mar       11     16
+```
+
+How to reshape the data, from more columns to less columns:
+```py
+import pandas as pd
+
+# Assuming df is your DataFrame
+# Example DataFrame
+data = {
+    'product': ['ProductA', 'ProductB', 'ProductC'],
+    'quarter_1': [100, 200, 300],
+    'quarter_2': [150, 250, 350],
+    'quarter_3': [200, 300, 400],
+    'quarter_4': [250, 350, 450]
+}
+df = pd.DataFrame(data)
+
+# Reshape the DataFrame
+reshaped_df = df.melt(id_vars='product', var_name='quarter', value_name='sales')
+
+# Print the reshaped DataFrame
+print(reshaped_df)
+```
+```pycon
+    product    quarter  sales
+0  ProductA  quarter_1    100
+1  ProductB  quarter_1    200
+2  ProductC  quarter_1    300
+3  ProductA  quarter_2    150
+4  ProductB  quarter_2    250
+5  ProductC  quarter_2    350
+6  ProductA  quarter_3    200
+7  ProductB  quarter_3    300
+8  ProductC  quarter_3    400
+9  ProductA  quarter_4    250
+10 ProductB  quarter_4    350
+11 ProductC  quarter_4    450
+
 ```
